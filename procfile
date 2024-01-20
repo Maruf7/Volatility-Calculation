@@ -1,1 +1,1 @@
-web: gunicorn flaskapp:app
+web: waitress-serve flaskapp:app
