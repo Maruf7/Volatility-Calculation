@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import pandas as pd
 import math 
+import json
 from waitress import serve
 
 app = Flask(__name__)
@@ -13,7 +14,6 @@ def calculateVolatility(file):
 
     valDic = {}
 
-    import json
     valDic['Daily Returns'] = json.loads(niftyDf[["Returns"]].to_json(date_format='iso'))
     sd = niftyDf["Returns"].std()
     valDic['Daily Volatility'] = sd
@@ -25,21 +25,31 @@ def calculateVolatility(file):
 @app.route('/details', methods = ['POST'])
 def details():
 
-    print(request)
-    
-    print(request.files['file'].filename)
-    print(request.form['path'])
-
-    if request.method == 'POST' and request.form['path'] == "" and request.files['file'].filename != "":
+    if request.method == 'POST' and request.form.get('path', '') == '' and request.files['file'].filename != '':
         file = request.files['file']
-        print("Test", file)
         calVal = calculateVolatility(file)
         return render_template("show.html", valueBundle=calVal)
     
-    elif request.method == 'POST' and request.form['path'] != "":
+    elif request.method == 'POST' and request.form.get('path', '') != '':
         file = request.form['path']
         calVal = calculateVolatility(file)
         return render_template("show.html", valueBundle=calVal)
+    
+    else:
+        return render_template("error.html")
+    
+
+@app.route('/volatility', methods = ['POST'])
+def volatility():
+    if request.method == 'POST' and request.form.get('path', '') == '' and request.files['file'].filename != '':
+        file = request.files['file']
+        calVal = calculateVolatility(file)
+        return calVal
+    
+    elif request.method == 'POST' and request.form.get('path', '') != '':
+        file = request.form['path']
+        calVal = calculateVolatility(file)
+        return calVal
     
     else:
         return render_template("error.html")

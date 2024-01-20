@@ -15,15 +15,20 @@
     <div class="col-md-6 offset-md-3 mt-5">
       
          <br>
-         <h1>Please upload or select path to your Excel file.</h1>
+         <h1>Please upload or select path to your Excel file from local directory.</h1>
+         <h3>(If both given file path will be considered.)</h3>
+         <br>
+
          <form accept-charset="UTF-8" action="/details" method="POST" enctype="multipart/form-data">
            <div class="form-group">
              <label for="exampleInputName">Full path of the file</label>
              <input type="text" name="path" class="form-control" placeholder="File path">
            </div>
            
-           <hr>
            <div>OR</div>
+
+           <hr>
+           
            <div class="form-group mt-3">
              <label class="mr-2">Upload your CSV file:</label>
              <input type="file" name="file">
