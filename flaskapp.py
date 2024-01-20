@@ -26,10 +26,9 @@ def checkFile(request):
     #Check if the request has file or file path
 
     calVal = None
-    if request.method == 'POST' and request.form.get('path', '') == '' and request.files['file'].filename != '':
+    if request.method == 'POST' and request.form.get('path', '') == '' and request.args.get("file") != None:
         file = request.files['file']
         calVal = calculateVolatility(file)
-        return render_template("show.html", valueBundle=calVal)
     
     elif request.method == 'POST' and request.form.get('path', '') != '':
         file = request.form['path']
@@ -42,6 +41,25 @@ def checkFile(request):
 
 @app.route('/showDetails', methods = ['POST'])
 def showDetails():
+    ''' 
+    post:
+        summary: showDetails endpoint.
+        description: Displays HTML page with the calculated information
+        parameters:
+            - name: file
+              in: body
+              description: Excel file(.xlsx) file needs to be uploaded
+              type: file
+
+            - name: path
+              in: body
+              description: Provide complete file path from of Excel file(.xlsx) from local
+              type: string
+
+        responses:
+            200:
+                description: HTML page to be returned.
+    '''
     volatilityVal = checkFile(request)
     if volatilityVal != None:
         return render_template("show.html", valueBundle=volatilityVal)
@@ -51,6 +69,26 @@ def showDetails():
 
 @app.route('/volatility', methods = ['POST'])
 def volatility():
+    ''' 
+    post:
+        summary: volatility endpoint.
+        description: Returns a JSON with values
+        parameters:
+            - name: file
+              in: body
+              description: Excel file(.xlsx) file needs to be uploaded
+              type: file
+
+            - name: path
+              in: body
+              description: Provide complete file path from of Excel file(.xlsx) from local
+              type: string
+
+        responses:
+            200:
+                description: Returns JSON Response.
+    '''
+
     volatilityVal = checkFile(request)
     if volatilityVal != None:
         return volatilityVal
